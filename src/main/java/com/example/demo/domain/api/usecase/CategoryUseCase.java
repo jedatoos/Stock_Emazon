@@ -4,7 +4,9 @@ package com.example.demo.domain.api.usecase;
 import com.example.demo.domain.api.ICategoryServicePort;
 import com.example.demo.domain.exception.EntityAlreadyExistsException;
 import com.example.demo.domain.model.Category;
+import com.example.demo.domain.model.PageResult;
 import com.example.demo.domain.spi.category.ICategoryPersistencePort;
+import com.example.demo.domain.util.PageResultUtil;
 
 public class CategoryUseCase implements ICategoryServicePort {
 
@@ -20,5 +22,10 @@ public class CategoryUseCase implements ICategoryServicePort {
             throw new EntityAlreadyExistsException("Category");
         }
         categoriaPersistencePort.saveCategory(category);
+    }
+
+    @Override
+    public PageResult<Category> getAllCategoriesPaginated(PageResultUtil pageResultUtil) {
+        return categoriaPersistencePort.getAllCategoriesPaginated(pageResultUtil);
     }
 }

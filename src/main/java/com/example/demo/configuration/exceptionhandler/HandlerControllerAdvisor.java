@@ -1,5 +1,6 @@
 package com.example.demo.configuration.exceptionhandler;
 
+import com.example.demo.domain.exception.InvalidPageIndexException;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -22,6 +23,10 @@ public class HandlerControllerAdvisor {
                 .collect(Collectors.joining(", "));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", errors));
 
+    }
+    @ExceptionHandler(InvalidPageIndexException.class)
+    public ResponseEntity<String> handleInvalidPageIndexException(InvalidPageIndexException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
