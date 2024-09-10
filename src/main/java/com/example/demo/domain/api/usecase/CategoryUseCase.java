@@ -4,9 +4,9 @@ package com.example.demo.domain.api.usecase;
 import com.example.demo.domain.api.ICategoryServicePort;
 import com.example.demo.domain.exception.EntityAlreadyExistsException;
 import com.example.demo.domain.model.Category;
-import com.example.demo.domain.model.PageResult;
-import com.example.demo.domain.spi.category.ICategoryPersistencePort;
-import com.example.demo.domain.util.PageResultUtil;
+import com.example.demo.domain.model.Pagination;
+import com.example.demo.domain.spi.ICategoryPersistencePort;
+import com.example.demo.domain.util.PaginationUtil;
 
 public class CategoryUseCase implements ICategoryServicePort {
 
@@ -25,7 +25,7 @@ public class CategoryUseCase implements ICategoryServicePort {
     }
 
     @Override
-    public PageResult<Category> getAllCategoriesPaginated(PageResultUtil pageResultUtil) {
+    public Pagination<Category> getAllCategoriesPaginated(PaginationUtil pageResultUtil) {
         return categoriaPersistencePort.getAllCategoriesPaginated(pageResultUtil);
     }
 }

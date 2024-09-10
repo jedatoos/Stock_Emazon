@@ -1,4 +1,4 @@
-package com.example.demo.ports.application.http.mapper.category;
+package com.example.demo.ports.application.http.mappers;
 
 import com.example.demo.domain.model.Category;
 import com.example.demo.ports.application.http.dto.CategoryResponse;

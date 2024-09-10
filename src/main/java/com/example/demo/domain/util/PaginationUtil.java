@@ -1,17 +1,17 @@
 package com.example.demo.domain.util;
+//Recibe orden
+public class PaginationUtil {
+    private int pageSize;//El número de elementos por página.
+    private int pageNumber;// El número de la página que se desea obtener
+    private String nameFilter;//Un filtro de búsqueda o criterio para filtrar los elementos. Puede ser un nombre
+    private boolean ascending;//Un valor booleano que indica si los elementos deben ordenarse en orden ascendente.
 
-public class PageResultUtil {
-    private int pageSize;
-    private int pageNumber;
-    private String nameFilter;
-    private boolean ascending;
-
-    public PageResultUtil() {
+    public PaginationUtil() {
     }
 
-    public PageResultUtil(int pageSize, int pageNumber, String nameFilter, boolean ascending) {
+    public PaginationUtil(int pageSize, int pageNumber, String nameFilter, boolean ascending) {
         this.pageSize = pageSize;
-        this.pageNumber = pageNumber-1;
+        this.pageNumber = pageNumber -1;
         this.nameFilter = nameFilter;
         this.ascending = ascending;
     }

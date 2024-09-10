@@ -2,50 +2,83 @@ package com.example.demo.domain.api.usecase;
 
 import com.example.demo.domain.exception.EntityAlreadyExistsException;
 import com.example.demo.domain.model.Category;
-import com.example.demo.domain.spi.category.ICategoryPersistencePort;
-import org.junit.jupiter.api.DisplayName;
+import com.example.demo.domain.model.Pagination;
+import com.example.demo.domain.spi.ICategoryPersistencePort;
+
+import com.example.demo.domain.util.PaginationUtil;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.Timeout;
 
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@Timeout(value = 5, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
 class CategoryUseCaseTest {
-    @Mock
-    private  ICategoryPersistencePort categoriaPersistencePort;
-    @InjectMocks
-    private CategoryUseCase categoryUseCase;
+
+    private final ICategoryPersistencePort categoryPersistencePortMock = mock(ICategoryPersistencePort.class, "categoryPersistencePort");
+
     @Test
-    @DisplayName("verifica que se lanza una excepción cuando se intenta guardar una categoría que ya existe")
-    void saveCategory_WhenCategoryExists_ShouldThrowEntityAlreadyExistsException() {
-        // Arrange
-        Category category = new Category(1L, "Sports", "Category for sports items");
+    void saveCategoryWhenCategoryPersistencePortCategoryExistsByNameCategoryGetCategoryNameThrowsEntityAlreadyExistsException() {
+        // Arrange Statement
+        doReturn(true).when(categoryPersistencePortMock).categoryExistsByName("Electronics");
+        CategoryUseCase target = new CategoryUseCase(categoryPersistencePortMock);
+        Category category = new Category();
+        category.setCategoryName("Electronics");
 
-        when(categoriaPersistencePort.categoryExistsByName(category.getCategoryName())).thenReturn(true);
+        // Act Statement
+        EntityAlreadyExistsException result = assertThrows(EntityAlreadyExistsException.class, () -> target.saveCategory(category));
 
-        // Act & Assert
-        assertThrows(EntityAlreadyExistsException.class, () -> categoryUseCase.saveCategory(category));
-
-
+        // Assert statement(s)
+        assertAll("result",
+                () -> assertThat(result, is(notNullValue())),
+                () -> verify(categoryPersistencePortMock).categoryExistsByName("Electronics")
+        );
     }
-    @DisplayName("verifica que la categoría se guarda correctamente cuando no existe.")
-    @Test
-    void saveCategory_WhenCategoryDoesNotExist_ShouldSaveCategory() {
-        // Arrange
-        Category category = new Category(1L, "Sports", "Category for sports items");
 
-        when(categoriaPersistencePort.categoryExistsByName(category.getCategoryName())).thenReturn(false);
 
-        // Act
-        categoryUseCase.saveCategory(category);
+    @Test()
+    void saveCategoryWhenCategoryPersistencePortNotCategoryExistsByNameCategoryGetCategoryName() {
 
-        // Assert
-        verify(categoriaPersistencePort).saveCategory(category);
+        //(categoryPersistencePort.categoryExistsByName(category.getCategoryName())) : false
+
+        //Arrange Statement
+
+        doReturn(false).when(categoryPersistencePortMock).categoryExistsByName("Electronics");
+        Category category = new Category();
+        category.setCategoryName("Electronics");
+        doNothing().when(categoryPersistencePortMock).saveCategory(category);
+        CategoryUseCase target = new CategoryUseCase(categoryPersistencePortMock);
+
+        //Act Statement
+        target.saveCategory(category);
+
+        //Assert statement
+        assertAll("result", () -> {
+            verify(categoryPersistencePortMock).categoryExistsByName("Electronics");
+            verify(categoryPersistencePortMock).saveCategory(category);
+        });
+    }
+
+    @Test()
+    void getAllCategoriesPaginatedTest() {
+        //Arrange Statement
+        Pagination<Category> paginationMock = mock(Pagination.class);
+        PaginationUtil paginationUtilMock = mock(PaginationUtil.class);
+        doReturn(paginationMock).when(categoryPersistencePortMock).getAllCategoriesPaginated(paginationUtilMock);
+        CategoryUseCase target = new CategoryUseCase(categoryPersistencePortMock);
+
+        //Act Statement
+        Pagination<Category> result = target.getAllCategoriesPaginated(paginationUtilMock);
+
+        //Assert statement
+        assertAll("result", () -> {
+            assertThat(result, equalTo(paginationMock));
+            verify(categoryPersistencePortMock).getAllCategoriesPaginated(paginationUtilMock);
+        });
     }
 
 

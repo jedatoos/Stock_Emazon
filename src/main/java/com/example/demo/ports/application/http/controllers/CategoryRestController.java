@@ -1,14 +1,14 @@
-package com.example.demo.ports.application.http.controller.category;
+package com.example.demo.ports.application.http.controllers;
 
 
 import com.example.demo.domain.api.ICategoryServicePort;
 import com.example.demo.domain.model.Category;
-import com.example.demo.domain.model.PageResult;
-import com.example.demo.domain.util.PageResultUtil;
+import com.example.demo.domain.model.Pagination;
+import com.example.demo.domain.util.PaginationUtil;
 import com.example.demo.ports.application.http.dto.CategoryRequest;
 import com.example.demo.ports.application.http.dto.CategoryResponse;
-import com.example.demo.ports.application.http.mapper.category.CategoryRequestMapper;
-import com.example.demo.ports.application.http.mapper.category.ICategoryResponseMapper;
+import com.example.demo.ports.application.http.mappers.CategoryRequestMapper;
+import com.example.demo.ports.application.http.mappers.ICategoryResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -51,7 +51,7 @@ public class CategoryRestController {
             @ApiResponse(responseCode = "400", description = "Invalid pagination parameters", content = @Content)
     })
     @GetMapping
-    public ResponseEntity<PageResult<CategoryResponse>> getAllCategoriesPaginated(
+    public ResponseEntity<Pagination<CategoryResponse>> getAllCategoriesPaginated(
             @Parameter(description = "Page number", example = "1")
             @RequestParam(defaultValue = "1", required = false) int page,
             @Parameter(description = "Page size", example = "10")
@@ -61,15 +61,15 @@ public class CategoryRestController {
             @Parameter(description = "Sort order", example = "true")
             @RequestParam(defaultValue = "true",required = false) boolean isAscending
     ) {
-        PageResult<Category> categoryPagination = categoryServicePort.getAllCategoriesPaginated(new PageResultUtil(size,page, nameFilter, isAscending));
-        List<Category> categories = categoryPagination.getItems();
+        Pagination<Category> categoryPagination = categoryServicePort.getAllCategoriesPaginated(new PaginationUtil(size,page, nameFilter, isAscending));
+        List<Category> categories = categoryPagination.getContent();
 
         return ResponseEntity.ok(
-                new PageResult<>(
-                        categoryPagination.isAscendingOrder(),
-                        categoryPagination.getCurrentPageIndex(),
-                        categoryPagination.getPageCount(),
-                        categoryPagination.getTotalCount(),
+                new Pagination<>(
+                        categoryPagination.isAscending(),
+                        categoryPagination.getCurrentPage()+1,
+                        categoryPagination.getTotalPages() ,
+                        categoryPagination.getTotalElements(),
                         categoryResponseMapper.categoriesToCategoryResponses(categories)
                 )
         );

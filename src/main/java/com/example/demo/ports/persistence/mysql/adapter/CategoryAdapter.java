@@ -2,11 +2,11 @@ package com.example.demo.ports.persistence.mysql.adapter;
 
 
 import com.example.demo.domain.model.Category;
-import com.example.demo.domain.model.PageResult;
-import com.example.demo.domain.spi.category.ICategoryPersistencePort;
-import com.example.demo.domain.util.PageResultUtil;
+import com.example.demo.domain.model.Pagination;
+import com.example.demo.domain.spi.ICategoryPersistencePort;
+import com.example.demo.domain.util.PaginationUtil;
 import com.example.demo.ports.persistence.mysql.entity.CategoryEntity;
-import com.example.demo.ports.persistence.mysql.mapper.CategoryEntityMapper;
+import com.example.demo.ports.persistence.mysql.mapper.ICategoryEntityMapper;
 import com.example.demo.ports.persistence.mysql.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryAdapter implements ICategoryPersistencePort {
     private final ICategoryRepository categoryRepository;
-    private final CategoryEntityMapper categoryEntityMapper;
+    private final ICategoryEntityMapper categoryEntityMapper;
 
     @Override
     public void saveCategory(Category category) {
@@ -31,7 +31,7 @@ public class CategoryAdapter implements ICategoryPersistencePort {
     }
 
     @Override
-    public PageResult<Category> getAllCategoriesPaginated(PageResultUtil pageResultUtil) {
+    public Pagination<Category> getAllCategoriesPaginated(PaginationUtil pageResultUtil) {
         // Determinar la dirección del ordenamiento (ascendente o descendente)
         Sort.Direction sortDirection = pageResultUtil.isAscending() ? Sort.Direction.ASC : Sort.Direction.DESC;
 
@@ -49,12 +49,14 @@ public class CategoryAdapter implements ICategoryPersistencePort {
         List<Category> categories = categoryEntityMapper.toCategoryList(categoryPage.getContent());
 
         // Retornar un objeto PageResult que encapsula toda la información de la paginación
-        return new PageResult<>(
+        return new Pagination<>(
                 pageResultUtil.isAscending(),
-                pageResultUtil.getPageNumber()+1,
+                pageResultUtil.getPageNumber(),
                 categoryPage.getTotalPages(),
                 categoryPage.getTotalElements(),
                 categories
         );
     }
+
+
 }
