@@ -1,4 +1,4 @@
-package com.example.demo.ports.application.http.dto;
+package com.example.demo.ports.application.http.dto.category;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

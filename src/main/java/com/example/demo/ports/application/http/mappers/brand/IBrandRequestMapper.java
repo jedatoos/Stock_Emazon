@@ -1,7 +1,7 @@
-package com.example.demo.ports.application.http.mappers;
+package com.example.demo.ports.application.http.mappers.brand;
 
 import com.example.demo.domain.model.Brand;
-import com.example.demo.ports.application.http.dto.BrandRequest;
+import com.example.demo.ports.application.http.dto.brand.BrandRequest;
 
 import org.mapstruct.Mapper;
 

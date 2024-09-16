@@ -4,10 +4,11 @@ import com.example.demo.domain.api.IBrandServicePort;
 import com.example.demo.domain.model.Brand;
 import com.example.demo.domain.model.Pagination;
 import com.example.demo.domain.util.PaginationUtil;
-import com.example.demo.ports.application.http.dto.BrandRequest;
-import com.example.demo.ports.application.http.dto.BrandResponse;
-import com.example.demo.ports.application.http.mappers.IBrandRequestMapper;
-import com.example.demo.ports.application.http.mappers.IBrandResponseMapper;
+import com.example.demo.ports.application.http.dto.brand.BrandRequest;
+import com.example.demo.ports.application.http.dto.brand.BrandResponse;
+import com.example.demo.ports.application.http.mappers.brand.IBrandRequestMapper;
+import com.example.demo.ports.application.http.mappers.brand.IBrandResponseMapper;
+import com.example.demo.ports.application.http.util.BrandValidationConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,7 +40,7 @@ public class BrandRestController {
             @ApiResponse(responseCode = "409", description = "Brand already exists", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<Void> saveBrand(@Valid @RequestBody BrandRequest brandRequest) {
+    public ResponseEntity<String> saveBrand(@Valid @RequestBody BrandRequest brandRequest) {
         // Convertir el objeto BrandRequest a un objeto Brand
         Brand brand = brandRequestMapper.brandRequestToBrand(brandRequest);
 
@@ -47,7 +48,7 @@ public class BrandRestController {
         brandServicePort.saveBrand(brand);
 
         // Retornar una respuesta HTTP 201 Created si salio bien
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(BrandValidationConstants.DESCRIPTION_LENGTH_MESSAGE);
     }
     @Operation(summary = "Get all brands paginated", description = "Retrieves a paginated list of brands")
     @ApiResponses(value = {
@@ -71,7 +72,7 @@ public class BrandRestController {
         return ResponseEntity.ok(
                 new Pagination<>(
                         brandPagination.isAscending(),
-                        brandPagination.getCurrentPage()+1,
+                        brandPagination.getCurrentPage(),
                         brandPagination.getTotalPages() ,
                         brandPagination.getTotalElements(),
                         brandResponseMapper.brandsToBrandResponses(brands)

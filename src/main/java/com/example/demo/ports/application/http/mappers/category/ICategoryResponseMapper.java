@@ -1,7 +1,7 @@
-package com.example.demo.ports.application.http.mappers;
+package com.example.demo.ports.application.http.mappers.category;
 
 import com.example.demo.domain.model.Category;
-import com.example.demo.ports.application.http.dto.CategoryResponse;
+import com.example.demo.ports.application.http.dto.category.CategoryResponse;
 import org.mapstruct.Mapper;
 
 import java.util.List;

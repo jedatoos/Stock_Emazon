@@ -1,4 +1,4 @@
-package com.example.demo.ports.application.http.dto;
+package com.example.demo.ports.application.http.dto.brand;
 
 
 import com.example.demo.ports.application.http.util.BrandValidationConstants;

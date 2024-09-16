@@ -5,10 +5,11 @@ import com.example.demo.domain.api.ICategoryServicePort;
 import com.example.demo.domain.model.Category;
 import com.example.demo.domain.model.Pagination;
 import com.example.demo.domain.util.PaginationUtil;
-import com.example.demo.ports.application.http.dto.CategoryRequest;
-import com.example.demo.ports.application.http.dto.CategoryResponse;
-import com.example.demo.ports.application.http.mappers.CategoryRequestMapper;
-import com.example.demo.ports.application.http.mappers.ICategoryResponseMapper;
+import com.example.demo.ports.application.http.dto.category.CategoryRequest;
+import com.example.demo.ports.application.http.dto.category.CategoryResponse;
+import com.example.demo.ports.application.http.mappers.category.CategoryRequestMapper;
+import com.example.demo.ports.application.http.mappers.category.ICategoryResponseMapper;
+import com.example.demo.ports.application.http.util.CategoryValidationConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -40,10 +41,10 @@ public class CategoryRestController {
             @ApiResponse(responseCode = "409", description = "Category already exists", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<Void> saveCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
+    public ResponseEntity<String> saveCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
         Category category = categoryRequestMapper.categoryRequestToCategory(categoryRequest);
         categoryServicePort.saveCategory(category);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(CategoryValidationConstants.CATEGORY_SAVED_SUCCESS_MESSAGE);
     }
     @Operation(summary = "Get all categories paginated", description = "Retrieves a paginated list of categories")
     @ApiResponses(value = {
@@ -67,7 +68,7 @@ public class CategoryRestController {
         return ResponseEntity.ok(
                 new Pagination<>(
                         categoryPagination.isAscending(),
-                        categoryPagination.getCurrentPage()+1,
+                        categoryPagination.getCurrentPage(),
                         categoryPagination.getTotalPages() ,
                         categoryPagination.getTotalElements(),
                         categoryResponseMapper.categoriesToCategoryResponses(categories)

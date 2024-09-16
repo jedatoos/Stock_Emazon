@@ -8,6 +8,7 @@ public class CategoryValidationConstants {
     public static final int MIN_LENGTH_CATEGORY=3;
     public static final String NAME_LENGTH_MESSAGE = "The category name must be between " + MIN_LENGTH_CATEGORY + " and 50 characters";
     public static final String DESCRIPTION_LENGTH_MESSAGE = "The category description must be between " + MIN_LENGTH_CATEGORY + " and 90 characters";
+    public static final String CATEGORY_SAVED_SUCCESS_MESSAGE = "Category saved successfully";
 
     private CategoryValidationConstants() {
     }
